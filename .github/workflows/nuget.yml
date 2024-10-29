@@ -1,21 +1,19 @@
-# This workflow will build a .NET project
-# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-net
-
 name: "Deploy to NuGet"
 
 on:
   push:
-    tags:
-    - 'v*'
+    branches:
+      - main  # Trigger only when merging to main branch
 
 env:
-  PROJECT_PATH: 'SimaCryptoTool\SimaCryptoTool.csproj'
-  PACKAGE_OUTPUT_DIRECTORY: ${{ github.workspace }}\output
+  PROJECT_PATH: 'SimaCryptoTool/SimaCryptoTool.csproj'
+  PACKAGE_OUTPUT_DIRECTORY: ${{ github.workspace }}/output
   NUGET_SOURCE_URL: 'https://api.nuget.org/v3/index.json'    
+
 jobs:
   deploy:
     name: 'Deploy'
-    runs-on: 'windows-latest'
+    runs-on: 'ubuntu-latest'
     steps:
     - name: 'Checkout'
       uses: actions/checkout@v2
@@ -25,18 +23,37 @@ jobs:
       with:
         dotnet-version: '3.1.x'
 
+    - name: 'Get latest tag'
+      id: get_tag
+      run: |
+        latest_tag=$(git describe --tags --abbrev=0)
+        echo "latest_tag=${latest_tag}" >> $GITHUB_ENV
+
+    - name: 'Calculate next version'
+      id: next_version
+      run: |
+        version=${{ env.latest_tag }}
+        if [[ $version == v* ]]; then version=${version:1}; fi  # Remove 'v' if exists
+        IFS='.' read -ra parts <<< "$version"
+        parts[2]=$((parts[2]+1))  # Increment patch version
+        next_version="${parts[0]}.${parts[1]}.${parts[2]}"
+        echo "next_version=v$next_version" >> $GITHUB_ENV
+
+    - name: 'Create new tag'
+      run: |
+        git config --local user.name "github-actions"
+        git config --local user.email "github-actions@github.com"
+        git tag ${{ env.next_version }}
+        git push origin ${{ env.next_version }}
+
     - name: 'Restore packages'
       run: dotnet restore ${{ env.PROJECT_PATH }}
 
     - name: 'Build project'
       run: dotnet build ${{ env.PROJECT_PATH }} --no-restore --configuration Release
 
-    - name: 'Get Version'
-      id: version
-      uses: battila7/get-version-action@v2
-
     - name: 'Pack project'
-      run: dotnet pack ${{ env.PROJECT_PATH }} --no-restore --no-build --configuration Release --include-symbols -p:PackageVersion=${{ steps.version.outputs.version-without-v }} --output ${{ env.PACKAGE_OUTPUT_DIRECTORY }}
+      run: dotnet pack ${{ env.PROJECT_PATH }} --no-restore --no-build --configuration Release --include-symbols -p:PackageVersion=${{ env.next_version#v }} --output ${{ env.PACKAGE_OUTPUT_DIRECTORY }}
 
     - name: 'Push package'
-      run: dotnet nuget push ${{ env.PACKAGE_OUTPUT_DIRECTORY }}\*.nupkg -k ${{ secrets.NUGET_KEY }} -s ${{ env.NUGET_SOURCE_URL }}
+      run: dotnet nuget push ${{ env.PACKAGE_OUTPUT_DIRECTORY }}/*.nupkg -k ${{ secrets.NUGET_KEY }} -s ${{ env.NUGET_SOURCE_URL }}
