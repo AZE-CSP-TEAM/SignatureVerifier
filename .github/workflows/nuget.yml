@@ -20,15 +20,12 @@ jobs:
       uses: actions/checkout@v2
       with:
         fetch-depth: 0  # Fetch entire history to get all tags
-
     - name: 'Install dotnet'
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: '8.0.x'
-
     - name: 'Restore packages'
       run: dotnet restore ${{ env.PROJECT_PATH }}
-
     - name: 'Build project'
       run: dotnet build ${{ env.PROJECT_PATH }} --no-restore --configuration Release
 
@@ -39,12 +36,10 @@ jobs:
     steps:
     - name: 'Checkout'
       uses: actions/checkout@v2
-      
     - name: 'Install dotnet'
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: '8.0.x'
-
     - name: 'Run tests'
       run: dotnet test ${{ env.PROJECT_PATH }}
 
@@ -71,6 +66,7 @@ jobs:
       run: |
         latest_tag=$(git describe --tags --abbrev=0 2>/dev/null || echo "v1.0.0")
         echo "latest_tag=${latest_tag}" >> $GITHUB_ENV
+        echo "Latest tag: $latest_tag"
 
     - name: 'Calculate next available version'
       id: next_version
@@ -86,6 +82,7 @@ jobs:
             return 1  # Version exists
           else
             echo "next_version=$version_check" >> $GITHUB_ENV
+            echo "next_version_no_v=${version_check#v}" >> $GITHUB_ENV  # Store version without 'v'
             return 0  # Version does not exist
           fi
         }
@@ -94,19 +91,22 @@ jobs:
         while ! check_version; do
           parts[2]=$((parts[2]+1))  # Increment patch version
         done
-
-        echo "next_version_no_v=${next_version#v}" >> $GITHUB_ENV  # Store version without 'v'
-
+        echo "Determined next version: $version_check (no v: ${version_check#v})"
+    
     - name: 'Pack project'
       run: |
-        dotnet pack ${{ env.PROJECT_PATH }} --no-restore --no-build --configuration Release --include-symbols -p:PackageVersion=${next_version_no_v} --output ${{ env.PACKAGE_OUTPUT_DIRECTORY }}
+        echo "Packing project with version: ${{ env.next_version_no_v }}"
+        dotnet pack ${{ env.PROJECT_PATH }} --no-restore --no-build --configuration Release --include-symbols -p:PackageVersion=${{ env.next_version_no_v }} --output ${{ env.PACKAGE_OUTPUT_DIRECTORY }}
 
     - name: 'Push package'
-      run: dotnet nuget push ${{ env.PACKAGE_OUTPUT_DIRECTORY }}/*.nupkg -k ${{ secrets.NUGET_KEY }} -s ${{ env.NUGET_SOURCE_URL }} --skip-duplicate
+      run: |
+        echo "Pushing package with version: ${{ env.next_version_no_v }}"
+        dotnet nuget push ${{ env.PACKAGE_OUTPUT_DIRECTORY }}/*.nupkg -k ${{ secrets.NUGET_KEY }} -s ${{ env.NUGET_SOURCE_URL }} --skip-duplicate
 
     - name: 'Create new tag'
       if: success()  # Only run if all previous steps succeeded
       run: |
+        echo "Creating tag ${{ env.next_version }}"
         git config --local user.name "github-actions"
         git config --local user.email "github-actions@github.com"
         git tag ${{ env.next_version }}
