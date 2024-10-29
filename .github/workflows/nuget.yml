@@ -99,6 +99,7 @@ jobs:
 
     - name: 'Pack project'
       run: |
+        dotnet --version
         dotnet pack ${{ env.PROJECT_PATH }} --no-restore --no-build --configuration Release --include-symbols -p:PackageVersion=${{ env.next_version_no_v }} --output ${{ env.PACKAGE_OUTPUT_DIRECTORY }}
 
     - name: 'Push package'
