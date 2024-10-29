@@ -1,0 +1,11 @@
+D:\Projects\SimaVerifier\SimaCryptoTool\SimaCryptoTool\bin\Debug\netstandard2.1\SimaCryptoTool.deps.json
+D:\Projects\SimaVerifier\SimaCryptoTool\SimaCryptoTool\bin\Debug\netstandard2.1\SimaCryptoTool.dll
+D:\Projects\SimaVerifier\SimaCryptoTool\SimaCryptoTool\bin\Debug\netstandard2.1\SimaCryptoTool.pdb
+D:\Projects\SimaVerifier\SimaCryptoTool\SimaCryptoTool\obj\Debug\netstandard2.1\SimaCryptoTool.csproj.AssemblyReference.cache
+D:\Projects\SimaVerifier\SimaCryptoTool\SimaCryptoTool\obj\Debug\netstandard2.1\SimaCryptoTool.GeneratedMSBuildEditorConfig.editorconfig
+D:\Projects\SimaVerifier\SimaCryptoTool\SimaCryptoTool\obj\Debug\netstandard2.1\SimaCryptoTool.AssemblyInfoInputs.cache
+D:\Projects\SimaVerifier\SimaCryptoTool\SimaCryptoTool\obj\Debug\netstandard2.1\SimaCryptoTool.AssemblyInfo.cs
+D:\Projects\SimaVerifier\SimaCryptoTool\SimaCryptoTool\obj\Debug\netstandard2.1\SimaCryptoTool.csproj.CoreCompileInputs.cache
+D:\Projects\SimaVerifier\SimaCryptoTool\SimaCryptoTool\obj\Debug\netstandard2.1\SimaCryptoTool.sourcelink.json
+D:\Projects\SimaVerifier\SimaCryptoTool\SimaCryptoTool\obj\Debug\netstandard2.1\SimaCryptoTool.dll
+D:\Projects\SimaVerifier\SimaCryptoTool\SimaCryptoTool\obj\Debug\netstandard2.1\SimaCryptoTool.pdb
