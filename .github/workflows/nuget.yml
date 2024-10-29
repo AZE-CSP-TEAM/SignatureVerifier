@@ -59,7 +59,7 @@ jobs:
         fetch-depth: 0
 
     - name: 'Fetch all tags'
-      run: git fetch --tags --prune --unshallow  # Ensure all tags are fetched properly
+      run: git fetch --tags --prune  # Ensure all tags are fetched properly
 
     - name: 'Install dotnet'
       uses: actions/setup-dotnet@v1
