@@ -42,10 +42,16 @@ jobs:
 
     - name: 'Create new tag'
       run: |
-        git config --local user.name "github-actions"
-        git config --local user.email "github-actions@github.com"
-        git tag ${{ env.next_version }}
-        git push origin ${{ env.next_version }}
+        git fetch --tags  # Get all tags from the remote
+        if git tag --list | grep -q "^${{ env.next_version }}$"; then
+          echo "Tag ${{ env.next_version }} already exists. Skipping tag creation."
+        else
+          git config --local user.name "github-actions"
+          git config --local user.email "github-actions@github.com"
+          git tag ${{ env.next_version }}
+          git push origin ${{ env.next_version }}
+        fi
+
 
     - name: 'Restore packages'
       run: dotnet restore ${{ env.PROJECT_PATH }}
