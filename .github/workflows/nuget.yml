@@ -93,17 +93,17 @@ jobs:
           parts[2]=$((parts[2]+1))  # Increment patch version
         done
 
-        echo "next_version_no_v=${{ env.next_version#v }}" >> $GITHUB_ENV  # Store version without 'v'
+        echo "next_version_no_v=${next_version#v}" >> $GITHUB_ENV  # Store version without 'v'
 
     - name: 'Pack project'
       run: |
-        dotnet pack ${{ env.PROJECT_PATH }} --no-restore --no-build --configuration Release --include-symbols -p:PackageVersion=${{ env.next_version_no_v }} --output ${{ env.PACKAGE_OUTPUT_DIRECTORY }}
+        dotnet pack ${{ env.PROJECT_PATH }} --no-restore --no-build --configuration Release --include-symbols -p:PackageVersion=${next_version_no_v} --output ${{ env.PACKAGE_OUTPUT_DIRECTORY }}
 
     - name: 'Push package'
       run: dotnet nuget push ${{ env.PACKAGE_OUTPUT_DIRECTORY }}/*.nupkg -k ${{ secrets.NUGET_KEY }} -s ${{ env.NUGET_SOURCE_URL }} --skip-duplicate
 
     - name: 'Create new tag'
-      if: success()  # Run only if all previous steps are successful
+      if: success()  # Only run if all previous steps succeeded
       run: |
         git config --local user.name "github-actions"
         git config --local user.email "github-actions@github.com"
