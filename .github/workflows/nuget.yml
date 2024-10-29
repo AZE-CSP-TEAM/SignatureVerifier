@@ -38,6 +38,7 @@ jobs:
         parts[2]=$((parts[2]+1))  # Increment patch version
         next_version="v${parts[0]}.${parts[1]}.${parts[2]}"
         echo "next_version=${next_version}" >> $GITHUB_ENV
+        echo "next_version_no_v=${next_version#v}" >> $GITHUB_ENV  # Store version without 'v'
 
     - name: 'Create new tag'
       run: |
@@ -54,8 +55,7 @@ jobs:
 
     - name: 'Pack project'
       run: |
-        version_no_v=${{ env.next_version#v }}  # Remove 'v' from the version
-        dotnet pack ${{ env.PROJECT_PATH }} --no-restore --no-build --configuration Release --include-symbols -p:PackageVersion=$version_no_v --output ${{ env.PACKAGE_OUTPUT_DIRECTORY }}
+        dotnet pack ${{ env.PROJECT_PATH }} --no-restore --no-build --configuration Release --include-symbols -p:PackageVersion=${{ env.next_version_no_v }} --output ${{ env.PACKAGE_OUTPUT_DIRECTORY }}
 
     - name: 'Push package'
       run: dotnet nuget push ${{ env.PACKAGE_OUTPUT_DIRECTORY }}/*.nupkg -k ${{ secrets.NUGET_KEY }} -s ${{ env.NUGET_SOURCE_URL }}
