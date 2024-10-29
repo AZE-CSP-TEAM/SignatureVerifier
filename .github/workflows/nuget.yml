@@ -96,6 +96,11 @@ jobs:
 
     - name: Clear local NuGet package cache
       run: dotnet nuget locals all --clear
+   
+    - name: 'Rebuild project'
+      run: |
+        dotnet --version
+        dotnet build ${{ env.PROJECT_PATH }} --no-restore --configuration Release
 
     - name: 'Pack project'
       run: |
