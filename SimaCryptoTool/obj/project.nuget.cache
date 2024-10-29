@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "dgSpecHash": "X7JlUVFXVfw=",
+  "success": true,
+  "projectFilePath": "D:\\Projects\\SimaVerifier\\SimaCryptoTool\\SimaCryptoTool\\SimaCryptoTool.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\Farid\\.nuget\\packages\\portable.bouncycastle\\1.9.0\\portable.bouncycastle.1.9.0.nupkg.sha512"
+  ],
+  "logs": []
+}
