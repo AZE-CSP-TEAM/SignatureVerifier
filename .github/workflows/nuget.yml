@@ -9,16 +9,52 @@ env:
   PROJECT_PATH: 'SimaCryptoTool/SimaCryptoTool.csproj'
   PACKAGE_OUTPUT_DIRECTORY: ${{ github.workspace }}/output
   NUGET_SOURCE_URL: 'https://api.nuget.org/v3/index.json'    
+  PACKAGE_NAME: 'SimaCryptoTool'
 
 jobs:
-  deploy:
-    name: 'Deploy'
+  build:
+    name: 'Build'
     runs-on: 'ubuntu-latest'
     steps:
     - name: 'Checkout'
       uses: actions/checkout@v2
       with:
         fetch-depth: 0  # Fetch all history to get all tags
+
+    - name: 'Install dotnet'
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: '8.0.x'
+
+    - name: 'Restore packages'
+      run: dotnet restore ${{ env.PROJECT_PATH }}
+
+    - name: 'Build project'
+      run: dotnet build ${{ env.PROJECT_PATH }} --no-restore --configuration Release
+
+  test:
+    name: 'Test'
+    runs-on: 'ubuntu-latest'
+    needs: build  # Ensures 'test' runs after 'build'
+    steps:
+    - name: 'Checkout'
+      uses: actions/checkout@v2
+      
+    - name: 'Install dotnet'
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: '8.0.x'
+
+    - name: 'Run tests'
+      run: dotnet test ${{ env.PROJECT_PATH }}
+
+  version_and_deploy:
+    name: 'Check Version and Deploy'
+    runs-on: 'ubuntu-latest'
+    needs: test  # Ensures 'version_and_deploy' runs after 'test' is successful
+    steps:
+    - name: 'Checkout'
+      uses: actions/checkout@v2
 
     - name: 'Install dotnet'
       uses: actions/setup-dotnet@v1
@@ -34,29 +70,30 @@ jobs:
         latest_tag=$(git describe --tags --abbrev=0 2>/dev/null || echo "v1.0.0")
         echo "latest_tag=${latest_tag}" >> $GITHUB_ENV
 
-    - name: 'Calculate next version'
+    - name: 'Calculate next available version'
       id: next_version
       run: |
         version=${{ env.latest_tag }}
         version=${version#v}  # Remove 'v' if it exists
         IFS='.' read -ra parts <<< "$version"
-        parts[2]=$((parts[2]+1))  # Increment patch version
-        next_version="v${parts[0]}.${parts[1]}.${parts[2]}"
-        echo "next_version=${next_version}" >> $GITHUB_ENV
-        echo "next_version_no_v=${next_version#v}" >> $GITHUB_ENV  # Store version without 'v'
+        
+        check_version() {
+          version_check="v${parts[0]}.${parts[1]}.${parts[2]}"
+          response=$(curl -s -o /dev/null -w "%{http_code}" https://api.nuget.org/v3-flatcontainer/${{ env.PACKAGE_NAME }}/$version_check/$version_check.nupkg)
+          if [[ "$response" == "200" ]]; then
+            return 1  # Version exists
+          else
+            echo "next_version=$version_check" >> $GITHUB_ENV
+            return 0  # Version does not exist
+          fi
+        }
+        
+        # Loop to find the next available version
+        while ! check_version; do
+          parts[2]=$((parts[2]+1))  # Increment patch version
+        done
 
-    - name: 'Create new tag'
-      run: |
-        git config --local user.name "github-actions"
-        git config --local user.email "github-actions@github.com"
-        git tag ${{ env.next_version }}
-        git push origin ${{ env.next_version }}
-
-    - name: 'Restore packages'
-      run: dotnet restore ${{ env.PROJECT_PATH }}
-
-    - name: 'Build project'
-      run: dotnet build ${{ env.PROJECT_PATH }} --no-restore --configuration Release
+        echo "next_version_no_v=${{ env.next_version#v }}" >> $GITHUB_ENV  # Store version without 'v'
 
     - name: 'Pack project'
       run: |
@@ -64,3 +101,11 @@ jobs:
 
     - name: 'Push package'
       run: dotnet nuget push ${{ env.PACKAGE_OUTPUT_DIRECTORY }}/*.nupkg -k ${{ secrets.NUGET_KEY }} -s ${{ env.NUGET_SOURCE_URL }} --skip-duplicate
+
+    - name: 'Create new tag'
+      if: success()  # Run only if all previous steps are successful
+      run: |
+        git config --local user.name "github-actions"
+        git config --local user.email "github-actions@github.com"
+        git tag ${{ env.next_version }}
+        git push origin ${{ env.next_version }}
