@@ -19,7 +19,7 @@ jobs:
     - name: 'Checkout'
       uses: actions/checkout@v2
       with:
-        fetch-depth: 0  # Fetch all history to get all tags
+        fetch-depth: 0  # Fetch entire history to get all tags
 
     - name: 'Install dotnet'
       uses: actions/setup-dotnet@v1
@@ -55,14 +55,16 @@ jobs:
     steps:
     - name: 'Checkout'
       uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+
+    - name: 'Fetch all tags'
+      run: git fetch --tags --prune --unshallow  # Ensure all tags are fetched properly
 
     - name: 'Install dotnet'
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: '8.0.x'
-
-    - name: 'Fetch tags'
-      run: git fetch --tags  # Ensure all tags are fetched
 
     - name: 'Get latest tag'
       id: get_tag
