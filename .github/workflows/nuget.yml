@@ -100,7 +100,7 @@ jobs:
     - name: 'Rebuild project'
       run: |
         dotnet --version
-        dotnet build ${{ env.PROJECT_PATH }} --no-restore --configuration Release
+        dotnet build ${{ env.PROJECT_PATH }}  --configuration Release
 
     - name: 'Pack project'
       run: |
