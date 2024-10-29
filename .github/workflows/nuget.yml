@@ -3,7 +3,7 @@ name: "Deploy to NuGet"
 on:
   push:
     branches:
-      - main  # Trigger only when merging to main branch
+      - main
 
 env:
   PROJECT_PATH: 'SimaCryptoTool/SimaCryptoTool.csproj'
@@ -19,7 +19,7 @@ jobs:
     - name: 'Checkout'
       uses: actions/checkout@v2
       with:
-        fetch-depth: 0  # Fetch entire history to get all tags
+        fetch-depth: 0
     - name: 'Install dotnet'
       uses: actions/setup-dotnet@v1
       with:
@@ -32,7 +32,7 @@ jobs:
   test:
     name: 'Test'
     runs-on: 'ubuntu-latest'
-    needs: build  # Ensures 'test' runs after 'build'
+    needs: build
     steps:
     - name: 'Checkout'
       uses: actions/checkout@v2
@@ -46,7 +46,7 @@ jobs:
   version_and_deploy:
     name: 'Check Version and Deploy'
     runs-on: 'ubuntu-latest'
-    needs: test  # Ensures 'version_and_deploy' runs after 'test' is successful
+    needs: test
     steps:
     - name: 'Checkout'
       uses: actions/checkout@v2
@@ -54,7 +54,7 @@ jobs:
         fetch-depth: 0
 
     - name: 'Fetch all tags'
-      run: git fetch --tags --prune  # Ensure all tags are fetched properly
+      run: git fetch --tags --prune
 
     - name: 'Install dotnet'
       uses: actions/setup-dotnet@v1
@@ -72,41 +72,41 @@ jobs:
       id: next_version
       run: |
         version=${{ env.latest_tag }}
-        version=${version#v}  # Remove 'v' if it exists
+        version=${version#v}
         IFS='.' read -ra parts <<< "$version"
-        
-        check_version() {
-          version_check="v${parts[0]}.${parts[1]}.${parts[2]}"
-          response=$(curl -s -o /dev/null -w "%{http_code}" https://api.nuget.org/v3-flatcontainer/${{ env.PACKAGE_NAME }}/$version_check/$version_check.nupkg)
-          if [[ "$response" == "200" ]]; then
-            return 1  # Version exists
-          else
-            echo "next_version=$version_check" >> $GITHUB_ENV
-            echo "next_version_no_v=${version_check#v}" >> $GITHUB_ENV  # Store version without 'v'
-            return 0  # Version does not exist
-          fi
+
+        tag_exists() {
+          git tag --list "v${parts[0]}.${parts[1]}.${parts[2]}" | grep -q "v${parts[0]}.${parts[1]}.${parts[2]}"
         }
-        
-        # Loop to find the next available version
-        while ! check_version; do
-          parts[2]=$((parts[2]+1))  # Increment patch version
+        nuget_version_exists() {
+          version_check="v${parts[0]}.${parts[1]}.${parts[2]}"
+          response=$(curl -s -o /dev/null -w "%{http_code}" https://api.nuget.org/v3-flatcontainer/${{ env.PACKAGE_NAME }}/${version_check}/${version_check}.nupkg)
+          [[ "$response" == "200" ]]
+        }
+
+        while tag_exists || nuget_version_exists; do
+          parts[2]=$((parts[2]+1))
         done
-        echo "Determined next version: $version_check (no v: ${version_check#v})"
-    
+
+        next_version="v${parts[0]}.${parts[1]}.${parts[2]}"
+        next_version_no_v="${parts[0]}.${parts[1]}.${parts[2]}"
+        echo "next_version=$next_version" >> $GITHUB_ENV
+        echo "next_version_no_v=$next_version_no_v" >> $GITHUB_ENV
+        echo "Next available version: $next_version"
+
+    - name: Clear local NuGet package cache
+      run: dotnet nuget locals all --clear
+
     - name: 'Pack project'
       run: |
-        echo "Packing project with version: ${{ env.next_version_no_v }}"
         dotnet pack ${{ env.PROJECT_PATH }} --no-restore --no-build --configuration Release --include-symbols -p:PackageVersion=${{ env.next_version_no_v }} --output ${{ env.PACKAGE_OUTPUT_DIRECTORY }}
 
     - name: 'Push package'
-      run: |
-        echo "Pushing package with version: ${{ env.next_version_no_v }}"
-        dotnet nuget push ${{ env.PACKAGE_OUTPUT_DIRECTORY }}/*.nupkg -k ${{ secrets.NUGET_KEY }} -s ${{ env.NUGET_SOURCE_URL }} --skip-duplicate
+      run: dotnet nuget push ${{ env.PACKAGE_OUTPUT_DIRECTORY }}/*.nupkg -k ${{ secrets.NUGET_KEY }} -s ${{ env.NUGET_SOURCE_URL }} --skip-duplicate
 
     - name: 'Create new tag'
-      if: success()  # Only run if all previous steps succeeded
+      if: success()
       run: |
-        echo "Creating tag ${{ env.next_version }}"
         git config --local user.name "github-actions"
         git config --local user.email "github-actions@github.com"
         git tag ${{ env.next_version }}
