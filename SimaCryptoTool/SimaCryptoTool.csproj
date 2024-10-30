@@ -3,7 +3,7 @@
 	<PropertyGroup>
 		<TargetFrameworks>net6.0;netstandard2.0;net461</TargetFrameworks>
 		<Nullable>disable</Nullable>
-
+		<LangVersion>8.0</LangVersion>
 		<AssemblyTitle>Sima Crypto Tool($(TargetFramework))</AssemblyTitle>
 		<Authors>Farid Ismayilzada</Authors>
 		<Company>Azintelecom </Company>
