@@ -1724,7 +1724,7 @@
       },
       "SimaCryptoTool/1.0.0": {
         "type": "project",
-        "framework": ".NETStandard,Version=v2.1",
+        "framework": ".NETCoreApp,Version=v6.0",
         "dependencies": {
           "Portable.BouncyCastle": "1.9.0"
         },

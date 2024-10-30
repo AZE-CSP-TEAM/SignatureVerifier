@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("CryptoToolTest")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+da3829158debf82c6f5f293979bea304b76ff3e6")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+84d8402c1f8f7cb592bbfb59e1d002e268811c64")]
 [assembly: System.Reflection.AssemblyProductAttribute("CryptoToolTest")]
 [assembly: System.Reflection.AssemblyTitleAttribute("CryptoToolTest")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

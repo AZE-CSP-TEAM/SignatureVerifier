@@ -1,12 +1,18 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>netstandard2.0;netstandard2.1</TargetFramework>
-    <Nullable>enable</Nullable>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFrameworks>net6.0;netstandard2.0;net461</TargetFrameworks>
+		<Nullable>disable</Nullable>
 
-  <ItemGroup>
-    <PackageReference Include="Portable.BouncyCastle" Version="1.9.0" />
-  </ItemGroup>
+		<AssemblyTitle>Sima Crypto Tool($(TargetFramework))</AssemblyTitle>
+		<Authors>Farid Ismayilzada</Authors>
+		<Company>Azintelecom </Company>
+		<Copyright>©Farid Ismayilzada 2024</Copyright>
+		<PackageProjectUrl>https://github.com/AZE-DPC-SXM-DEV/SignatureVerifier</PackageProjectUrl>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Portable.BouncyCastle" Version="1.9.0" />
+	</ItemGroup>
 
 </Project>
