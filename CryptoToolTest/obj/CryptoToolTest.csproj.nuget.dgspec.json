@@ -25,7 +25,7 @@
           "C:\\Program Files (x86)\\NuGet\\Config\\Xamarin.Offline.config"
         ],
         "originalTargetFrameworks": [
-          "net4.8"
+          "net8"
         ],
         "sources": {
           "C:\\Program Files\\dotnet\\library-packs": {},
@@ -33,8 +33,8 @@
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
-          "net48": {
-            "targetAlias": "net4.8",
+          "net8.0": {
+            "targetAlias": "net8",
             "projectReferences": {
               "D:\\Projects\\SimaVerifier\\SimaCryptoTool\\SimaCryptoTool\\SimaCryptoTool.csproj": {
                 "projectPath": "D:\\Projects\\SimaVerifier\\SimaCryptoTool\\SimaCryptoTool\\SimaCryptoTool.csproj"
@@ -54,8 +54,8 @@
         }
       },
       "frameworks": {
-        "net48": {
-          "targetAlias": "net4.8",
+        "net8.0": {
+          "targetAlias": "net8",
           "dependencies": {
             "Microsoft.NET.Test.Sdk": {
               "target": "Package",
@@ -74,7 +74,23 @@
               "version": "[2.5.3, )"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.400\\RuntimeIdentifierGraph.json"
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.400/PortableRuntimeIdentifierGraph.json"
         }
       }
     },
