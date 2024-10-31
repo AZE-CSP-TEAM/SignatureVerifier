@@ -13,6 +13,7 @@
         "packagesPath": "C:\\Users\\User\\.nuget\\packages\\",
         "outputPath": "C:\\CryptoProjects\\SignatureVerifier\\CryptoToolTest\\obj\\",
         "projectStyle": "PackageReference",
+        "crossTargeting": true,
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
@@ -22,7 +23,9 @@
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
-          "net8"
+          "net462",
+          "net48",
+          "net8.0"
         ],
         "sources": {
           "C:\\LocalNuget": {},
@@ -32,7 +35,23 @@
         },
         "frameworks": {
           "net8.0": {
-            "targetAlias": "net8",
+            "targetAlias": "net8.0",
+            "projectReferences": {
+              "C:\\CryptoProjects\\SignatureVerifier\\SimaCryptoTool\\SimaCryptoTool.csproj": {
+                "projectPath": "C:\\CryptoProjects\\SignatureVerifier\\SimaCryptoTool\\SimaCryptoTool.csproj"
+              }
+            }
+          },
+          "net462": {
+            "targetAlias": "net462",
+            "projectReferences": {
+              "C:\\CryptoProjects\\SignatureVerifier\\SimaCryptoTool\\SimaCryptoTool.csproj": {
+                "projectPath": "C:\\CryptoProjects\\SignatureVerifier\\SimaCryptoTool\\SimaCryptoTool.csproj"
+              }
+            }
+          },
+          "net48": {
+            "targetAlias": "net48",
             "projectReferences": {
               "C:\\CryptoProjects\\SignatureVerifier\\SimaCryptoTool\\SimaCryptoTool.csproj": {
                 "projectPath": "C:\\CryptoProjects\\SignatureVerifier\\SimaCryptoTool\\SimaCryptoTool.csproj"
@@ -53,7 +72,7 @@
       },
       "frameworks": {
         "net8.0": {
-          "targetAlias": "net8",
+          "targetAlias": "net8.0",
           "dependencies": {
             "Microsoft.NET.Test.Sdk": {
               "target": "Package",
@@ -65,11 +84,11 @@
             },
             "xunit": {
               "target": "Package",
-              "version": "[2.5.3, )"
+              "version": "[2.4.1, )"
             },
             "xunit.runner.visualstudio": {
               "target": "Package",
-              "version": "[2.5.3, )"
+              "version": "[2.8.2, )"
             }
           },
           "imports": [
@@ -89,6 +108,50 @@
             }
           },
           "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.303/PortableRuntimeIdentifierGraph.json"
+        },
+        "net462": {
+          "targetAlias": "net462",
+          "dependencies": {
+            "Microsoft.NET.Test.Sdk": {
+              "target": "Package",
+              "version": "[17.8.0, )"
+            },
+            "coverlet.collector": {
+              "target": "Package",
+              "version": "[6.0.0, )"
+            },
+            "xunit": {
+              "target": "Package",
+              "version": "[2.4.1, )"
+            },
+            "xunit.runner.visualstudio": {
+              "target": "Package",
+              "version": "[2.8.2, )"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.303\\RuntimeIdentifierGraph.json"
+        },
+        "net48": {
+          "targetAlias": "net48",
+          "dependencies": {
+            "Microsoft.NET.Test.Sdk": {
+              "target": "Package",
+              "version": "[17.8.0, )"
+            },
+            "coverlet.collector": {
+              "target": "Package",
+              "version": "[6.0.0, )"
+            },
+            "xunit": {
+              "target": "Package",
+              "version": "[2.4.1, )"
+            },
+            "xunit.runner.visualstudio": {
+              "target": "Package",
+              "version": "[2.8.2, )"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.303\\RuntimeIdentifierGraph.json"
         }
       }
     },
