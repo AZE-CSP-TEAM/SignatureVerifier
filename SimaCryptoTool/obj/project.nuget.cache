@@ -1,12 +1,12 @@
 {
   "version": 2,
-  "dgSpecHash": "Kf24qjwddNQ=",
+  "dgSpecHash": "zU0hYs7muEM=",
   "success": true,
-  "projectFilePath": "D:\\Projects\\SimaVerifier\\SimaCryptoTool\\SimaCryptoTool\\SimaCryptoTool.csproj",
+  "projectFilePath": "C:\\CryptoProjects\\SignatureVerifier\\SimaCryptoTool\\SimaCryptoTool.csproj",
   "expectedPackageFiles": [
-    "C:\\Users\\Farid\\.nuget\\packages\\microsoft.netcore.platforms\\1.1.0\\microsoft.netcore.platforms.1.1.0.nupkg.sha512",
-    "C:\\Users\\Farid\\.nuget\\packages\\netstandard.library\\2.0.3\\netstandard.library.2.0.3.nupkg.sha512",
-    "C:\\Users\\Farid\\.nuget\\packages\\portable.bouncycastle\\1.9.0\\portable.bouncycastle.1.9.0.nupkg.sha512"
+    "C:\\Users\\User\\.nuget\\packages\\microsoft.netcore.platforms\\1.1.0\\microsoft.netcore.platforms.1.1.0.nupkg.sha512",
+    "C:\\Users\\User\\.nuget\\packages\\netstandard.library\\2.0.3\\netstandard.library.2.0.3.nupkg.sha512",
+    "C:\\Users\\User\\.nuget\\packages\\portable.bouncycastle\\1.9.0\\portable.bouncycastle.1.9.0.nupkg.sha512"
   ],
   "logs": []
 }
