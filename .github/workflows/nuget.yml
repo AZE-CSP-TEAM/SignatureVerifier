@@ -41,6 +41,8 @@ jobs:
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: '8.0.x'
+    - name: 'Install Mono (for .NET Framework support)'
+      run: sudo apt-get update && sudo apt-get install -y mono-devel
     - name: 'Run tests'
       run: dotnet test ${{ env.TEST_PATH }}
 
